@@ -28,7 +28,7 @@ RUN chmod 755 /*.sh
 
 # Add the Configurations files
 ADD conf/my.cnf /etc/mysql/conf.d/my.cnf
-ADD conf/supervisord-lamp.conf /etc/supervisor/conf.d/supervisord-lamp.conf
+ADD conf/supervisord-base.conf /etc/supervisor/conf.d/supervisord-base.conf
 
 # Remove pre-installed database
 RUN rm -rf /var/lib/mysql/*
