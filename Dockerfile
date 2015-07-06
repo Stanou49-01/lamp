@@ -43,3 +43,9 @@ RUN a2enmod rewrite
 
 # Add volumes for MySQL & Apache
 VOLUME  ["/etc/mysql", "/var/lib/mysql" , "/var/www/"]
+
+# Set the port
+EXPOSE 80 3306
+
+# Run
+CMD ["/run.sh"]
