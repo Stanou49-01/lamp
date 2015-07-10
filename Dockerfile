@@ -3,15 +3,27 @@ MAINTAINER Damien Lagae <damien@lagae.info>
 
 # Set the enviroment variable
 ENV DEBIAN_FRONTEND noninteractive
+# Set the nviroment variable for setting the Username and Password of MySQL
+ENV MYSQL_USER root
+ENV MYSQL_PASS toor
 
 # Install required packages
-RUN apt-get clean all
-RUN apt-get update 
-RUN apt-get -y install supervisor 
-RUN apt-get -y install mysql-server 
-RUN apt-get -y install apache2 
-RUN apt-get -y install php5 libapache2-mod-php5 php5-mysql php5-gd php-pear php-apc php5-curl curl lynx-cur
-RUN apt-get -y install git
+RUN apt-get clean all && apt-get update 
+RUN apt-get -y install supervisor mysql-server apache2 php5 libapache2-mod-php5 php5-mysql php5-gd php-pear php-apc php5-curl curl lynx-cur git wget build-essential ruby ruby-dev libsqlite3-dev
+
+# Cleanup
+RUN apt-get clean && rm -rf /var/lib/apt/lists/*
+
+# Install mailcatcher
+RUN gem install mailcatcher --no-rdoc --no-ri
+
+# Install Adminer
+RUN mkdir -p /opt/adminer/ && \
+    wget http://www.adminer.org/latest.php -O /opt/adminer/index.php && \
+    chown www-data:www-data -R /opt/adminer
+
+# Add shell scripts for starting mailcatcher
+ADD shell/mailcatcher-start.sh /mailcatcher-start.sh
 
 # Add shell scripts for starting apache2
 ADD shell/apache2-start.sh /apache2-start.sh
@@ -27,25 +39,34 @@ ADD shell/mysql_user.sh /mysql_user.sh
 RUN chmod 755 /*.sh
 
 # Add the Configurations files
+ADD conf/000-default.conf /etc/apache2/sites-enabled/000-default.conf
 ADD conf/my.cnf /etc/mysql/conf.d/my.cnf
 ADD conf/supervisord-base.conf /etc/supervisor/conf.d/supervisord-base.conf
 
 # Remove pre-installed database
 RUN rm -rf /var/lib/mysql/*
 
-# Enviroment variable for setting the Username and Password of MySQL
-ENV MYSQL_USER root
-ENV MYSQL_PASS toor
-
 # Enable apache mods.
-RUN a2enmod php5
-RUN a2enmod rewrite
+RUN a2enmod php5 && \
+    a2enmod rewrite
+
+# Setup PHP timezone
+RUN echo date.timezone=Europe/Brussels >> /etc/php5/apache2/conf.d/01-timezone.ini && \
+    echo date.timezone=Europe/Brussels >> /etc/php5/cli/conf.d/01-timezone.ini
+
+# Setup PHP to use mailcatcher to send mails
+RUN sed -i -e "s/.*sendmail_path =.*/sendmail_path = \/usr\/bin\/env \/usr\/local\/bin\/catchmail --smtp-ip mailcatcher -f address@example\.com/" /etc/php5/apache2/php.ini && \
+    sed -i -e "s/.*sendmail_path =.*/sendmail_path = \/usr\/bin\/env catchmail --smtp-ip mailcatcher -f address@example\.com/" /etc/php5/cli/php.ini
+
+# Setup PHP to display all errors
+RUN echo "error_reporting = E_ALL\ndisplay_startup_errors = 1\ndisplay_errors = 1" >> /etc/php5/apache2/conf.d/01-errors.ini && \
+    echo "error_reporting = E_ALL\ndisplay_startup_errors = 1\ndisplay_errors = 1" >> /etc/php5/cli/conf.d/01-errors.ini
 
 # Add volumes for MySQL & Apache
 VOLUME  ["/etc/mysql", "/var/lib/mysql" , "/var/www/"]
 
 # Set the port
-EXPOSE 80 3306
+EXPOSE 1080 80 3306
 
 # Run
 CMD ["/run.sh"]
