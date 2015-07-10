@@ -51,16 +51,16 @@ RUN a2enmod php5 && \
     a2enmod rewrite
 
 # Setup PHP timezone
-RUN echo date.timezone=Europe/Brussels >> /etc/php5/apache2/conf.d/01-timezone.ini && \
-    echo date.timezone=Europe/Brussels >> /etc/php5/cli/conf.d/01-timezone.ini
+RUN echo "date.timezone=Europe/Brussels" > /etc/php5/apache2/conf.d/01-timezone.ini && \
+    echo "date.timezone=Europe/Brussels" > /etc/php5/cli/conf.d/01-timezone.ini
 
 # Setup PHP to use mailcatcher to send mails
 RUN sed -i -e "s/.*sendmail_path =.*/sendmail_path = \/usr\/bin\/env \/usr\/local\/bin\/catchmail --smtp-ip mailcatcher -f address@example\.com/" /etc/php5/apache2/php.ini && \
     sed -i -e "s/.*sendmail_path =.*/sendmail_path = \/usr\/bin\/env catchmail --smtp-ip mailcatcher -f address@example\.com/" /etc/php5/cli/php.ini
 
 # Setup PHP to display all errors
-RUN echo "error_reporting = E_ALL\ndisplay_startup_errors = 1\ndisplay_errors = 1" >> /etc/php5/apache2/conf.d/01-errors.ini && \
-    echo "error_reporting = E_ALL\ndisplay_startup_errors = 1\ndisplay_errors = 1" >> /etc/php5/cli/conf.d/01-errors.ini
+RUN echo "error_reporting = E_ALL\ndisplay_startup_errors = 1\ndisplay_errors = 1" > /etc/php5/apache2/conf.d/01-errors.ini && \
+    echo "error_reporting = E_ALL\ndisplay_startup_errors = 1\ndisplay_errors = 1" > /etc/php5/cli/conf.d/01-errors.ini
 
 # Add volumes for MySQL & Apache
 VOLUME  ["/etc/mysql", "/var/lib/mysql" , "/var/www/"]
