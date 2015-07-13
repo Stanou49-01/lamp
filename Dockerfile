@@ -22,6 +22,12 @@ RUN mkdir -p /opt/adminer/ && \
     wget http://www.adminer.org/latest.php -O /opt/adminer/index.php && \
     chown www-data:www-data -R /opt/adminer
 
+# Install Composer
+RUN curl -sS https://getcomposer.org/installer | php
+RUN chmod +x composer.phar
+RUN mv composer.phar /usr/local/bin/composer
+ENV COMPOSER_HOME /opt/composer
+
 # Add shell scripts for starting mailcatcher
 ADD shell/mailcatcher-start.sh /mailcatcher-start.sh
 
