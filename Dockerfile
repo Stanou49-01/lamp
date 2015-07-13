@@ -8,8 +8,8 @@ ENV MYSQL_USER root
 ENV MYSQL_PASS toor
 
 # Install required packages
-RUN apt-get clean all && apt-get update 
-RUN apt-get -y install supervisor mysql-server apache2 php5 libapache2-mod-php5 php5-mysql php5-gd php-pear php-apc php5-curl curl lynx-cur git wget build-essential ruby ruby-dev libsqlite3-dev
+RUN apt-get clean all && apt-get update
+RUN apt-get -y install supervisor mysql-server apache2 php5 libapache2-mod-php5 php5-mysql php5-gd php-pear php-apc php5-curl php5-xdebug curl lynx-cur git wget build-essential ruby ruby-dev libsqlite3-dev
 
 # Cleanup
 RUN apt-get clean && rm -rf /var/lib/apt/lists/*
@@ -62,11 +62,17 @@ RUN sed -i -e "s/.*sendmail_path =.*/sendmail_path = \/usr\/bin\/env \/usr\/loca
 RUN echo "error_reporting = E_ALL\ndisplay_startup_errors = 1\ndisplay_errors = 1" > /etc/php5/apache2/conf.d/01-errors.ini && \
     echo "error_reporting = E_ALL\ndisplay_startup_errors = 1\ndisplay_errors = 1" > /etc/php5/cli/conf.d/01-errors.ini
 
+# Configure Xdebug
+RUN echo "xdebug.remote_enable=1" >> /etc/php5/apache2/conf.d/20-xdebug.ini &&\
+    echo "xdebug.remote_connect_back=1" >> /etc/php5/apache2/conf.d/20-xdebug.ini &&\
+    echo "xdebug.profiler_enable_trigger=1" >> /etc/php5/apache2/conf.d/20-xdebug.ini &&\
+    echo "xdebug.max_nesting_level=250" >> /etc/php5/apache2/conf.d/20-xdebug.ini
+
 # Add volumes for MySQL & Apache
 VOLUME  ["/etc/mysql", "/var/lib/mysql" , "/var/www/"]
 
 # Set the port
-EXPOSE 1080 80 3306
+EXPOSE 1080 80 3306 9000
 
 # Run
 CMD ["/run.sh"]
