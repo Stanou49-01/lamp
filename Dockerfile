@@ -80,5 +80,8 @@ VOLUME  ["/etc/mysql", "/var/lib/mysql" , "/var/www/"]
 # Set the port
 EXPOSE 1080 80 3306 9000
 
+# Set working directory
+WORKDIR /var/www/html
+
 # Run
 CMD ["/run.sh"]
