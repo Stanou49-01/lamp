@@ -8,7 +8,7 @@ ENV MYSQL_USER root
 ENV MYSQL_PASS toor
 
 # Install required packages
-RUN apt-get clean all && apt-get update
+RUN apt-get clean all && apt-get update && apt-get -y dist-upgrade
 RUN apt-get -y install supervisor mysql-server apache2 php5 libapache2-mod-php5 php5-mysql php5-gd php-pear php-apc php5-curl php5-xdebug curl lynx-cur git wget build-essential ruby ruby-dev libsqlite3-dev
 
 # Cleanup
