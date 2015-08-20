@@ -1,15 +1,13 @@
-FROM debian:latest
+FROM damienlagae:debian-base
 MAINTAINER Damien Lagae <damien@lagae.info>
 
-# Set the enviroment variable
-ENV DEBIAN_FRONTEND noninteractive
 # Set the nviroment variable for setting the Username and Password of MySQL
 ENV MYSQL_USER root
 ENV MYSQL_PASS toor
 
 # Install required packages
 RUN apt-get clean all && apt-get update && apt-get -y dist-upgrade
-RUN apt-get -y install supervisor mysql-server apache2 php5 libapache2-mod-php5 php5-mysql php5-gd php-pear php-apc php5-curl php5-xdebug curl lynx-cur git wget build-essential ruby ruby-dev libsqlite3-dev
+RUN apt-get -y install mysql-server apache2 php5 libapache2-mod-php5 php5-mysql php5-gd php-pear php-apc php5-curl php5-xdebug ruby ruby-dev libsqlite3-dev
 
 # Cleanup
 RUN apt-get clean && rm -rf /var/lib/apt/lists/*
@@ -47,7 +45,7 @@ RUN chmod 755 /*.sh
 # Add the Configurations files
 ADD conf/000-default.conf /etc/apache2/sites-enabled/000-default.conf
 ADD conf/my.cnf /etc/mysql/conf.d/my.cnf
-ADD conf/supervisord-base.conf /etc/supervisor/conf.d/supervisord-base.conf
+ADD conf/lamp.conf /etc/supervisor/conf.d/lamp.conf
 
 # Remove pre-installed database
 RUN rm -rf /var/lib/mysql/*
@@ -68,7 +66,7 @@ RUN sed -i -e "s/.*sendmail_path =.*/sendmail_path = \/usr\/bin\/env \/usr\/loca
 RUN echo "error_reporting = E_ALL\ndisplay_startup_errors = 1\ndisplay_errors = 1" > /etc/php5/apache2/conf.d/01-errors.ini && \
     echo "error_reporting = E_ALL\ndisplay_startup_errors = 1\ndisplay_errors = 1" > /etc/php5/cli/conf.d/01-errors.ini
 
-# Setup PHP: Increase size file 
+# Setup PHP: Increase size file
 RUN sed -i "s/upload_max_filesize = .*/upload_max_filesize = 20M/g" /etc/php5/apache2/php.ini && \
     sed -i "s/post_max_size = .*/post_max_size = 80M/g" /etc/php5/apache2/php.ini
 

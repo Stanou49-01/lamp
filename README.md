@@ -1,1 +1,1 @@
-# lamp-base
+# lamp
