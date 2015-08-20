@@ -1,4 +1,4 @@
-FROM damienlagae:debian-base
+FROM damienlagae/debian-base
 MAINTAINER Damien Lagae <damien@lagae.info>
 
 # Set the nviroment variable for setting the Username and Password of MySQL
