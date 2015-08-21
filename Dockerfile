@@ -4,6 +4,12 @@ MAINTAINER Damien Lagae <damien@lagae.info>
 # Set the nviroment variable for setting the Username and Password of MySQL
 ENV MYSQL_USER root
 ENV MYSQL_PASS toor
+ENV APACHE_LOCK_DIR /var/lock/apache2
+ENV APACHE_LOG_DIR /var/log/apache2
+ENV APACHE_PID_FILE /var/run/apache2.pid
+ENV APACHE_RUN_DIR /etc/apache2
+ENV APACHE_RUN_GROUP www-data
+ENV APACHE_RUN_USER www-data
 
 # Install required packages
 RUN apt-get clean all && apt-get update && apt-get -y dist-upgrade
