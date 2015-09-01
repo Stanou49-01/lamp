@@ -77,8 +77,12 @@ RUN sed -i "s/upload_max_filesize = .*/upload_max_filesize = 20M/g" /etc/php5/ap
     sed -i "s/post_max_size = .*/post_max_size = 80M/g" /etc/php5/apache2/php.ini
 
 # Configure Xdebug
-RUN echo "xdebug.remote_enable=1" >> /etc/php5/apache2/conf.d/20-xdebug.ini &&\
-    echo "xdebug.remote_connect_back=1" >> /etc/php5/apache2/conf.d/20-xdebug.ini &&\
+RUN echo "xdebug.default_enable=1" >> /etc/php5/apache2/conf.d/20-xdebug.ini &&\
+    echo "xdebug.idekey='docker'" >> /etc/php5/apache2/conf.d/20-xdebug.ini &&\
+    echo "xdebug.remote_enable=1" >> /etc/php5/apache2/conf.d/20-xdebug.ini &&\
+    echo "xdebug.remote_autostart=1" >> /etc/php5/apache2/conf.d/20-xdebug.ini &&\
+    echo "xdebug.remote_port=9000" >> /etc/php5/apache2/conf.d/20-xdebug.ini &&\
+    echo "xdebug.remote_handler=dbgp" >> /etc/php5/apache2/conf.d/20-xdebug.ini &&\
     echo "xdebug.profiler_enable_trigger=1" >> /etc/php5/apache2/conf.d/20-xdebug.ini &&\
     echo "xdebug.max_nesting_level=250" >> /etc/php5/apache2/conf.d/20-xdebug.ini
 
