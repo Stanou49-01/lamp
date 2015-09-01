@@ -13,7 +13,7 @@ ENV APACHE_RUN_USER www-data
 
 # Install required packages
 RUN apt-get clean all && apt-get update && apt-get -y dist-upgrade
-RUN apt-get -y install mysql-server apache2 php5 libapache2-mod-php5 php5-mysql php5-gd php-pear php-apc php5-curl php5-xdebug ruby ruby-dev libsqlite3-dev
+RUN apt-get -y install mysql-server apache2 php5 libapache2-mod-php5 php5-mysql php5-ldap php5-gd php-pear php-apc php5-curl php5-xdebug ruby ruby-dev libsqlite3-dev
 
 # Cleanup
 RUN apt-get clean && rm -rf /var/lib/apt/lists/*
