@@ -78,7 +78,7 @@ RUN sed -i "s/upload_max_filesize = .*/upload_max_filesize = 20M/g" /etc/php5/ap
 
 # Configure Xdebug
 RUN echo "xdebug.default_enable=1" >> /etc/php5/apache2/conf.d/20-xdebug.ini &&\
-    echo "xdebug.idekey='docker'" >> /etc/php5/apache2/conf.d/20-xdebug.ini &&\
+    echo "xdebug.idekey=docker" >> /etc/php5/apache2/conf.d/20-xdebug.ini &&\
     echo "xdebug.remote_enable=1" >> /etc/php5/apache2/conf.d/20-xdebug.ini &&\
     echo "xdebug.remote_autostart=1" >> /etc/php5/apache2/conf.d/20-xdebug.ini &&\
     echo "xdebug.remote_port=9000" >> /etc/php5/apache2/conf.d/20-xdebug.ini &&\
